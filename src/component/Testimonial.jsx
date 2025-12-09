@@ -16,7 +16,7 @@ const Testimonial = () => {
         {testimonials.map((testimonial) => (
           <div
             key={testimonial.id}
-            className="bg-white p-6 rounded-xl shadow max-w-xs 
+            className="bg-white p-6 rounded-xl shadow
               transform transition-all duration-300 
               hover:scale-105 hover:-translate-y-2 hover:shadow-2xl
             "
