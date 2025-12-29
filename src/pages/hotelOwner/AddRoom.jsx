@@ -30,9 +30,9 @@ const AddRoom = () => {
       <p className='text-gray-800 mt-10 '>Images</p>
       <div className='grid grid-cols-2 sm:flex gap-4 my-2 flex-wrap'>
         {Object.keys(images).map((key)=>
-        ( <label htmlFor={`room images${key}` } key={key}> 
+        ( <label htmlFor={`room-images${key}` } key={key}> 
         <img src={images[key] ? URL.createObjectURL(images[key]): assets.uploadArea } alt="" className='max-h-13 cursor-pointer opacity-80'/>
-        <input type="file" id={`room images${key}`}  accept='image/*' hidden onChange={e=>setImages({...images,[key]: e.target.files[0]})}/>
+        <input type="file" id={`room-images${key}`}  accept='image/*' hidden onChange={e=>setImages({...images,[key]: e.target.files[0]})}/>
         </label> )
         )}
       </div>
