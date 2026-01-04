@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React, { use, useEffect } from 'react'
 import Navbar from '../../component/hotelOwner/Navbar'
 import Sidebar from '../../component/hotelOwner/Sidebar'
 import { Outlet } from 'react-router-dom'
@@ -10,7 +10,7 @@ const Layout = () => {
   useEffect(() => {
     if(!isOwner){
       navigate('/');
-      
+
 
     }
   },[isOwner]);

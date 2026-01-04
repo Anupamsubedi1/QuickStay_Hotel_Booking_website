@@ -2,6 +2,8 @@ import React from 'react'
 import { assets, facilityIcons, roomsDummyData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import StarRating from '../component/StarRating';
+import { useAppContext } from '../context/AppContext';
+
 
 const CheckBox = ({ label,selected = false, onChange=() => {}}) => {
     return (
@@ -23,8 +25,21 @@ const RadioButton = ({ label,selected = false, onChange=() => {}}) => {
 };
 
 const AllRooms = () => {
+    const [searchParam, setSearchParam] = React.useState("");
 
-    const navigate = useNavigate();
+    const [ selectedFilters, setSelectedFilters ] = React.useState({
+        roomType: [],
+        priceRange: [],
+        
+    })
+
+    const [selectedSort, setSelectedSort] = React.useState("");
+
+    const {rooms, navigate, currency} = useAppContext();
+
+
+
+    
     const [openFilters, setOpenFilters] = React.useState(false);
 
     const roomTypes = ["Single Bed", "Double Bed", "Luxury Room", "Family Suite"];
@@ -32,6 +47,57 @@ const AllRooms = () => {
     const priceRanges = ["0 to 500", "500 to 1000", "1000 to 2000", "2000 to 3000"];
 
     const sortOptions = ["Price: Low to High", "Price: High to Low","Newest First"];
+
+    // handle changes for filters and sorting
+
+    const handleFilterChange = (checked,value, type) => {
+        setSelectedFilters((prevFilters) => {
+            const updatedFilters = { ...prevFilters };
+            if(checked){
+                updatedFilters[type].push(value);
+            }
+            else{
+                updatedFilters[type] = updatedFilters[type].filter((item) => item !== value);
+            }
+            return updatedFilters;
+        })
+    }
+
+    const handleSortChange = (sortOption) => {
+
+        setSelectedSort(sortOption);
+
+    }
+
+    // FUNCTION TO CHECK IF A ROOM MATCHES SELECTED ROOM TYPES
+
+    const matchesRoomTypes = (room) => {
+        return selectedFilters.roomType.length === 0 || selectedFilters.roomType.includes(room.roomType);
+    }
+
+    // function to check if a room matches selected price ranges
+
+    const matchesPriceRange = (room) => {
+        return selectedFilters.priceRange.length === 0 || selectedFilters.priceRange.some((range) => {
+            const [min, max] = range.split(" to ").map(Number);
+            return room.pricePerNight >= min && room.pricePerNight <= max;
+        });
+    }
+
+    // function to sort rooms based on the selected sort option
+
+    const sortRooms = (a,b) => {
+        if(selectedSort === "Price: Low to High"){
+            return a.pricePerNight - b.pricePerNight;
+        }
+        if (selectedSort === "Price: High to Low"){
+            return b.pricePerNight - a.pricePerNight;
+        }
+        if(selectedSort === "Newest First"){
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        return 0;}
+
 
   return (
     <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-4 md:px-16 lg:px-24 xl:px-32'>

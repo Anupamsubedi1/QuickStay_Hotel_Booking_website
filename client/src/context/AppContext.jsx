@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useContext, createContext, useState, useEffect } from "react";
+import { useContext, createContext, useState, useEffect, use } from "react";
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { toast } from "react-hot-toast";
 
@@ -18,6 +18,22 @@ export const AppProvider = ({ children }) => {
   const [isOwner, setIsOwner] = useState(false);
   const [showHotelReg, setShowHotelReg] = useState(false);
   const [searchedCities, setSearchedCities] = useState([]);
+  const [rooms, setRooms] = useState([]);
+
+  const fetchRooms = async () => {
+    try {
+      const { data} = await axios.get('/api/rooms');
+      if(data.success){
+        setRooms(data.rooms);
+      }else{
+        toast.error(data.message);
+      }
+      
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
 
   const fetchUser = async () => {
     try {
@@ -40,7 +56,12 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) fetchUser();
+
   }, [user]);
+
+  useEffect(() => {
+    fetchRooms();
+  })
 
   const value = {
     currency,
@@ -53,7 +74,9 @@ export const AppProvider = ({ children }) => {
     setShowHotelReg,
     searchedCities,
     setSearchedCities,
-    getToken
+    getToken,
+    rooms,
+    setRooms
   };
 
   return (
