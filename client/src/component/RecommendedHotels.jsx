@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React, { use, useEffect } from 'react'
 import { roomsDummyData } from '../assets/assets'
 import HotelCard from './HotelCard'
 import Title from './Title'

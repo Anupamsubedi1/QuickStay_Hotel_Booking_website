@@ -2,33 +2,40 @@ import React from 'react'
 import { assets, cities } from '../assets/assets'
 import { useAppContext } from '../context/AppContext';
 
-const Hero = () => {
+const Hero =  () => {
 
-    const {navigate,getToken,axios, setSearchedCities} = useAppContext();
-    const [destination, setDestination] = React.useState('')
+    const { navigate, getToken, axios, setSearchedCities } = useAppContext();
+    const [destination, setDestination] = React.useState('');
 
     const onSearch = async (e) => {
         e.preventDefault();
-        navigate(`/rooms?destination=${destination}`);
 
-        // call api to save recent searched city
+        try {
+            const token = await getToken(); // 🔥 FIX HERE
 
-        await axios.post('/api/user/store-recent-search', {recentSearchedCity: destination}, {
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-            }
-        })
+            await axios.post(
+                '/api/user/store-recent-search',
+                { recentSearchedCity: destination },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-        // add destination to searched cities max 3 recent searched cities
-        setSearchedCities(prevSearchedCities => {
-            const updatedSearchedCities = [...prevSearchedCities,destination];
-            if (updatedSearchedCities.length > 3) {
-                updatedSearchedCities.shift();
-                
-            }
-            return updatedSearchedCities;
-        })
-    }
+            setSearchedCities(prevSearchedCities => {
+                const updatedSearchedCities = [...prevSearchedCities, destination];
+                if (updatedSearchedCities.length > 3) {
+                    updatedSearchedCities.shift();
+                }
+                return updatedSearchedCities;
+            });
+
+            navigate(`/rooms?destination=${destination}`);
+        } catch (error) {
+            console.error('Failed to store recent search:', error);
+        }
+    };
 
 
   return (
