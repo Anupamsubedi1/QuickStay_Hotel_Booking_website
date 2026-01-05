@@ -1,10 +1,41 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Title from '../component/Title'
-import { assets, userBookingsDummyData } from '../assets/assets'
+import { assets} from '../assets/assets'
+import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const MyBookings = () => {
 
-    const [bookings, setBookings] = React.useState(userBookingsDummyData);
+    const {axios, getToken ,user} = useAppContext();
+
+    const [bookings, setBookings] = React.useState([]);
+    const fetchUserBookings = async () =>{
+        try {
+
+           
+            const {data} = await axios.get('/api/bookings/user',{
+                headers:{
+                    Authorization: `Bearer ${await getToken()}`,
+                }
+            });
+            if(data.success){
+                setBookings(data.bookings);
+            }
+            else{
+                toast.error(data.message);
+               
+            }
+            
+        } catch (error) {
+            toast.error(error.message);
+        }
+    }
+    useEffect(() => {
+    if (user) {
+        fetchUserBookings();
+    }
+    }, [user]);
+
 
   return (
     <div className='py-28 md:pb-35 md:pt-32 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -33,7 +64,7 @@ const MyBookings = () => {
                             className='min-md:w-44 rounded shadow object-cover'/>
                             <div className='flex flex-col gap-1.5 max-md:mt-3 min-md:ml-4'>
                                 <p className='font-playfair text-2xl'>{booking.hotel.name}
-                                    <span className='font-inter text-sm'>{booking.room.roomType}</span>
+                                    <span className='font-inter text-sm'>({booking.room.roomType})</span>
                                     </p>
 
                                 <div className='flex items-center gap-1 text-sm text-gray-500'>
