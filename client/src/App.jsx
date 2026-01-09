@@ -14,6 +14,7 @@ import ListRoom from './pages/hotelOwner/ListRoom';
 import {Toaster} from 'react-hot-toast';
 import { use } from 'react';
 import { useAppContext } from './context/AppContext';
+import Loader from './component/Loader';
 
 
 const App = () => {
@@ -34,6 +35,8 @@ const App = () => {
           <Route path="/rooms" element={<AllRooms />} />
           <Route path="/rooms/:id" element={<RoomDetails/>} />
           <Route path="/my-bookings" element={<MyBookings />} />
+          <Route path="/loader/:nextUrl" element={<Loader />} />
+
           <Route path='/owner' element={<Layout/>}>
             <Route index element={<Dashboard />} />
             <Route path='add-room' element={<AddRoom/>} />
