@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 
 export const protect = async (req, res, next) => {
-    const { userId } = req.auth(); // ✅ FIX
+    const { userId } = req.auth(); //  FIX
 
     if (!userId) {
         return res
