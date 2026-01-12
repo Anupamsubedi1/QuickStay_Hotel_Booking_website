@@ -1,15 +1,10 @@
-import User from '../models/User.js';
-
 export const protect = async (req, res, next) => {
-    const { userId } = req.auth(); //  FIX
+    const { userId } = req.auth(); // Assuming req.auth() is populated by some previous middleware
 
     if (!userId) {
-        return res
-            .status(401)
-            .json({ success: false, message: 'Not authenticated' });
+        return res.status(401).json({ success: false, message: 'Not authenticated' });
     }
 
-    const user = await User.findById(userId);
-    req.user = user;
+    req.userId = userId;
     next();
 };
